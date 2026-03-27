@@ -3,7 +3,6 @@ package largepass.handlers;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
@@ -63,7 +62,20 @@ public class FileHandler {
     public static boolean isFirstTime() {
         Path appDir = Path.of(System.getProperty("user.home"), ".largepass");
         File masterFile = appDir.resolve("master.key").toFile();
-        return !Files.exists(masterFile.toPath(), LinkOption.NOFOLLOW_LINKS) || isEmpty(masterFile.toPath());
+        return !masterFile.exists() || isEmpty(masterFile.toPath());
+    }
+
+    public static void deleteSensitiveFiles() {
+        try {
+            if (VAULT != null) {
+                Files.deleteIfExists(VAULT.toPath());
+            }
+            if (MASTER_PASS != null) {
+                Files.deleteIfExists(MASTER_PASS.toPath());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Could not delete sensitive files", e);
+        }
     }
 
     public static void ensureFilesExist() {

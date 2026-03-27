@@ -1,6 +1,5 @@
 package largepass.controllers;
 
-import java.io.File;
 import java.io.IOException;
 
 import javafx.event.ActionEvent;
@@ -9,37 +8,36 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.stage.Stage;
+import javafx.application.Platform;
 import largepass.handlers.EncryptionHandler;
 import largepass.handlers.FileHandler;
 
 public class HubController {
 
-    private File vault;
-    private File logger;
-
     private int remainingTries = 3;
 
     @FXML
-    private Label labelWelcome;
+    private Label labelAccountStatus;
 
     @FXML
-    private PasswordField passwordFieldMasterPass;
+    private PasswordField passwordFieldEnter;
 
     @FXML
-    private Button buttonSubmit;
-
-    @FXML
-    private void handleEnterKeyPressed(ActionEvent event) {
-        validateMasterPass(passwordFieldMasterPass.getText(), event);
+    private void initialize() {
+        FileHandler.loadFiles();
+        if (FileHandler.isFirstTime()) {
+            labelAccountStatus.setText("First time setup: create your master password");
+        } else {
+            labelAccountStatus.setText("Welcome back, enter your master password");
+        }
     }
 
     @FXML
-    private void handleSubmitButtonClicked(ActionEvent event) {
-        validateMasterPass(passwordFieldMasterPass.getText(), event);
+    private void handleEnterKeyPressed(ActionEvent event) {
+        validateMasterPass(passwordFieldEnter.getText(), event);
     }
 
     private void validateMasterPass(String masterPassIn, ActionEvent event) {
@@ -51,9 +49,14 @@ public class HubController {
             masterPassAccepted(event);
         } else {
             FileHandler.loadFiles();
-            if (EncryptionHandler.decrypt(FileHandler.getMasterPass(), masterPassIn).equals(passwordFieldMasterPass.getText())) {
-                masterPassAccepted(event);
-            } else {
+            try {
+                String decryptedMaster = EncryptionHandler.decrypt(FileHandler.getMasterPass(), masterPassIn);
+                if (decryptedMaster.equals(passwordFieldEnter.getText())) {
+                    masterPassAccepted(event);
+                } else {
+                    masterPassDenied(event);
+                }
+            } catch (RuntimeException e) {
                 masterPassDenied(event);
             }
         }
@@ -67,15 +70,22 @@ public class HubController {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            this.labelWelcome.setText("Could not load vault scene");
+            throw new RuntimeException("Could not load vault scene" + e);
         }
     }
 
     private void masterPassDenied(ActionEvent event) {
-        if (this.remainingTries == 1) {
-            labelWelcome.setText("boom 0 remaining, close app");
+        if (this.remainingTries == 0) {
+            FileHandler.loadFiles();
+            FileHandler.deleteSensitiveFiles();
+            FileHandler.writeString(FileHandler.LOGGER, "Deleted the database because of wrong tries!");
+            labelAccountStatus.setText("boom 0 remaining. Deleted the database...");
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.close();
+            Platform.exit();
         } else {
-            this.labelWelcome.setText("Wrong master password. Remaining tries " + String.valueOf(remainingTries));
+            this.labelAccountStatus.setText("Wrong master password. Self-destructing in " + String.valueOf(remainingTries));
             remainingTries--;
         }
         

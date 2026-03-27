@@ -1,13 +1,8 @@
 package largepass.handlers;
 
-import java.lang.Character.UnicodeScript;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
-import java.text.CharacterIterator;
 import java.util.Base64;
-import java.util.Random;
-import java.util.stream.IntStream;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -77,9 +72,10 @@ public class EncryptionHandler {
     }
 
     private static SecretKey deriveKey(String masterPassword, byte[] salt) throws Exception{
-        PBEKeySpec spec = new PBEKeySpec(masterPassword.toCharArray(), salt, PBKDF2_ITERATIONS);
+        PBEKeySpec spec = new PBEKeySpec(masterPassword.toCharArray(), salt, PBKDF2_ITERATIONS, KEY_LENGTH);
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
         byte[] keyBytes = factory.generateSecret(spec).getEncoded();
+        spec.clearPassword();
         return new SecretKeySpec(keyBytes, "AES");
     }
 

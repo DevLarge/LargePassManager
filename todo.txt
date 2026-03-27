@@ -1,4 +1,21 @@
 Make it possible to choose location for making the directory folder for vault and logger
 Only first time 
 
-Make it so the app shuts down after 3 failed pass attempts. And deletes the database failed
+
+save button: take all entries in vault.db and encrypt 
+
+add entry: inputs for values, adds entry with VaultManager#addEntry -> adds to files and updates GUI
+
+delete: deletes entry from vault.db and gui
+
+
+
+// 1. decrypt database and add to List<Entry> 
+        //          with VaultManager#generateDecryptedEntryList : List<Entry>
+        // 2. use the in memory list for all changes edits etc. 
+        // 3. when done encrypt the entire List<Entry> and add to the vault.db file with 
+        //          with VaultManager#generateEncryptedVault : encrypted vault.db
+
+        // never change database file encryption
+
+        // on close clear memory ????
