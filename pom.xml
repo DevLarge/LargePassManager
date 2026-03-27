@@ -3,12 +3,12 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
  
-    <groupId>TDT4100_project</groupId>
-    <artifactId>tdt4100_v2024_prosjekt_boilerplate</artifactId>
+    <groupId>LargePass</groupId>
+    <artifactId>largepass</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
  
-    <name>tdt4100_v2024_prosjekt_boilerplate</name>
+    <name>largepass</name>
 	
 
    <dependencies>
@@ -61,15 +61,15 @@
 			<version>0.0.8</version>
 			<configuration>
 				<options></options>
-				<mainClass>exampleproject.ExampleProjectApp</mainClass>
+				<mainClass>largepass.LargePassApp</mainClass>
 				<!-- for jlink -->
 				<compress>2</compress>
 				<noHeaderFiles>true</noHeaderFiles>
 				<stripDebug>true</stripDebug>
 				<noManPages>true</noManPages>
-				<launcher>exampleproject</launcher>
-				<jlinkImageName>exampleproject</jlinkImageName>
-				<jlinkZipName>exampleproject</jlinkZipName>
+				<launcher>largepass</launcher>
+				<jlinkImageName>largepass</jlinkImageName>
+				<jlinkZipName>largepass</jlinkZipName>
 			</configuration>
 	    </plugin>
 

@@ -1,0 +1,4 @@
+Make it possible to choose location for making the directory folder for vault and logger
+Only first time 
+
+Make it so the app shuts down after 3 failed pass attempts. And deletes the database failed
