@@ -4,10 +4,17 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
+import largepass.AppContext;
 import largepass.Entry;
-import largepass.VaultManager;
+import largepass.managers.VaultManager;
 
 public class VaultController {
+
+    private AppContext appContext;
+
+    public VaultController(AppContext appContext) {
+        this.appContext = appContext;
+    }
 
     @FXML
     private ListView<Entry> listPasswords;
