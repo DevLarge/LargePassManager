@@ -1,10 +1,11 @@
-package largepass;
+package largepass.managers;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import largepass.Entry;
 
 public class VaultManager {
 
@@ -22,7 +23,7 @@ public class VaultManager {
         Entry pass2 = new Entry("lea", "leapass", "ntnu");
         list.add(pass1);
         list.add(pass2);
-        
+
         return FXCollections.observableList(list);
     }
 
