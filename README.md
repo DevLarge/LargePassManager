@@ -9,7 +9,7 @@ I vault kan brukeren legge til, vise og slette oppføringer (entries). Hver oppf
 For lagring brukes en kombinasjon av JSON-format og kryptering. En liste med entries konverteres til tekst, krypteres med masterpassordet og skrives til fil (vault.db). Ved innlasting gjøres det motsatte: filinnhold dekrypteres og bygges opp til objekter igjen.  
 
 ## Klassediagram
-<img src=/home/devlarge/NTNU/java/Large-Pass-Manager/class-diagram.png alt="Klassediagram">
+<img src=class-diagram.png alt="Klassediagram">
 
 
 ## Refleksjon og spørsmål
