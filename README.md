@@ -1,3 +1,11 @@
+# Run the app!
+Installation
+`git clone https://github.com/DevLarge/LargePassManager.git`
+`mvn clean install`
+
+Run the app
+`mvn javafx:run`
+
 # Oscar Bakkeng prosjekt i Objektorientert programmering - LargePasswordManager. 
 
 ## Beskrivelse av app. 
