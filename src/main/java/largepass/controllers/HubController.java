@@ -38,10 +38,4 @@ public class HubController {
         hubManager.validateMasterPass(passwordFieldEnter.getText(), event);
     }
 
-    
-
-    
-
-    
-
 }

@@ -1,0 +1,187 @@
+@startuml largePass
+
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+package "largepass" {
+  class AppContext {
+    -cryptoService: CryptoService
+    -fileService: FileService
+    +AppContext()
+    +getCryptoService(): CryptoService
+    +getFileService(): FileService
+  }
+
+  class Entry {
+    -username: String
+    -password: String
+    -service: String
+    +Entry(username: String, password: String, service: String)
+    +Entry()
+    +toString(): String
+    +compareTo(other: Entry): int
+    +getUsername(): String
+    +getPassword(): String
+    +getService(): String
+    +setUsername(username: String): void
+    +setPassword(password: String): void
+    +setService(service: String): void
+  }
+
+  class LargePassApp {
+    -appContext: AppContext
+    +main(args: String[]): void
+    +start(primaryStage: Stage): void
+  }
+}
+
+package "largepass.controllers" {
+  class AddEntryController {
+    -addEntryManager: AddEntryManager
+    +stage: Stage
+    +titleField: TextField
+    +usernameField: TextField
+    +passwordField: TextField
+    +AddEntryController(appContext: AppContext)
+    +setStage(stage: Stage): void
+    -saveEntry(): void
+    -cancelEntry(): void
+  }
+
+  class HubController {
+    -appContext: AppContext
+    -hubManager: HubManager
+    +labelAccountStatus: Label
+    +passwordFieldEnter: PasswordField
+    +HubController(appContext: AppContext)
+    -initialize(): void
+    -handleEnterKeyPressed(event: ActionEvent): void
+  }
+
+  class VaultController {
+    -appContext: AppContext
+    -vaultManager: VaultManager
+    +listPasswords: ListView<Entry>
+    +labelService: Label
+    +labelUsername: Label
+    +labelPassword: Label
+    +VaultController(appContext: AppContext)
+    -initialize(): void
+    -openAddEntryWindow(): void
+    -clickDeleteButton(): void
+  }
+}
+
+package "largepass.managers" {
+  class AddEntryManager {
+    -appContext: AppContext
+    -addEntryController: AddEntryController
+    +AddEntryManager(appContext: AppContext, addEntryController: AddEntryController)
+    +saveEntry(): void
+  }
+
+  class HubManager {
+    -appContext: AppContext
+    -hubController: HubController
+    -remainingTries: int
+    +HubManager(appContext: AppContext, hubController: HubController)
+    -masterPassAccepted(event: ActionEvent): void
+    -masterPassDenied(event: ActionEvent): void
+    +validateMasterPass(masterPassIn: String, event: ActionEvent): void
+  }
+
+  class VaultManager {
+    -DEFAULT_SERVICE_TEXT: String
+    -DEFAULT_VALUE_TEXT: String
+    -appContext: AppContext
+    -vaultController: VaultController
+    +VaultManager(appContext: AppContext, vaultController: VaultController)
+    +updateEntryInfo(entry: Entry): void
+    +deleteEntryButton(): void
+    +addEntryButton(): void
+  }
+}
+
+package "largepass.services" {
+  class CryptoService {
+    -appContext: AppContext
+    -encryption: Encryption
+    -objectMapper: ObjectMapper
+    -masterPassword: String
+    -observablePasswordList: ObservableList<Entry>
+    +CryptoService(appContext: AppContext)
+    +getEncryption(): Encryption
+    +decryptVault(): void
+    +encryptVault(): void
+    +getObservablePasswordList(): ObservableList<Entry>
+    +getMasterPass(): String
+    +setMasterPassword(masterPassword: String): void
+  }
+
+  class FileService {
+    -pathDir: Path
+    -vault: File
+    -logger: File
+    -masterPassFile: File
+    +FileService(pathDir: Path)
+    +loadFiles(): void
+    +writeString(file: File, str: String): void
+    -isEmpty(path: Path): boolean
+    +isFirstTime(): boolean
+    +deleteSensitiveFiles(): void
+    +ensureFilesExist(): void
+    +log(logString: String): void
+    +getVault(): File
+    +getMasterPassFile(): File
+    +getLogger(): File
+  }
+}
+
+package "largepass.util" {
+  class Encryption {
+    -RANDOM: SecureRandom
+    -SALT_LENGTH: int
+    -IV_LENGTH: int
+    -KEY_LENGTH: int
+    -PBKDF2_ITERATIONS: int
+    -GCM_TAG_LENGTH: int
+    +encrypt(plainText: String, masterPassword: String): String
+    +decrypt(encryptedData: String, masterPassword: String): String
+    -deriveKey(masterPassword: String, salt: byte[]): SecretKey
+  }
+}
+
+' Inheritance / implementation
+LargePassApp --|> Application
+Entry ..|> Comparable
+
+' Core composition/association
+AppContext *-- CryptoService
+AppContext *-- FileService
+CryptoService --> Encryption
+CryptoService --> Entry
+
+' Controller <-> manager links
+AddEntryController *-- AddEntryManager
+HubController *-- HubManager
+VaultController *-- VaultManager
+
+' Manager dependencies
+AddEntryManager --> AppContext
+AddEntryManager --> AddEntryController
+AddEntryManager --> Entry
+HubManager --> AppContext
+HubManager --> HubController
+HubManager --> VaultController
+VaultManager --> AppContext
+VaultManager --> VaultController
+VaultManager --> AddEntryController
+VaultManager --> Entry
+
+' Controller dependencies
+HubController --> AppContext
+VaultController --> AppContext
+VaultController --> Entry
+AddEntryController --> AppContext
+
+@enduml

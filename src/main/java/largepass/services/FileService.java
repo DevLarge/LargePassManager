@@ -1,11 +1,17 @@
 package largepass.services;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
+/**
+ * Service for controlling the files. 
+ * Files are saved under directory .largepass in the user.home directory. 
+ */
 public class FileService {
 
     private Path pathDir;
@@ -19,12 +25,20 @@ public class FileService {
         ensureFilesExist();
     }
 
+    /**
+     * Loads all files to memory from the pathDirectory. 
+     */
     public void loadFiles() {
         this.vault = pathDir.resolve("vault.db").toFile();
         this.masterPassFile = pathDir.resolve("master.key").toFile();
         this.logger = pathDir.resolve("logger.txt").toFile();
     }
 
+    /**
+     * Writes a string to a file. 
+     * @param file the file to write to.  
+     * @param str the string to write. 
+     */
     public void writeString(File file, String str) {
         try {
             Files.writeString(
@@ -39,6 +53,11 @@ public class FileService {
         }
     }
 
+    /**
+     * Checkc if the path is empty. 
+     * @param path
+     * @return {@link Boolean} true if it is empty. 
+     */
     private boolean isEmpty(Path path) {
         try {
             return Files.size(path) == 0;
@@ -47,19 +66,18 @@ public class FileService {
         }
     }
 
-    public String getMasterPass() {
-        try {
-            return Files.readString(getMasterPassFile().toPath());
-        } catch (IOException e) {
-            throw new RuntimeException("Could not read master password file", e);
-        }
-    }
-
+    /**
+     * Checks if it is the user's first time. 
+     * @return {@link Boolean} whether the file does not exist or if the file is empty. 
+     */
     public boolean isFirstTime() {
         File masterFile = pathDir.resolve("master.key").toFile();
         return !masterFile.exists() || isEmpty(masterFile.toPath());
     }
 
+    /**
+     * Delets all the files. 
+     */
     public void deleteSensitiveFiles() {
         try {
             if (getVault() != null) {
@@ -73,6 +91,10 @@ public class FileService {
         }
     }
 
+    /**
+     * Ensures that the files exists and have been made. 
+     * If not it creates them. 
+     */
     public void ensureFilesExist() {
         try {
             Files.createDirectories(getVault().toPath().getParent());
@@ -90,6 +112,30 @@ public class FileService {
             throw new RuntimeException("Could not create app files", e);
         }
     }
+
+    /**
+     * For debugging. Writes a string to the logger file. 
+     * Replaces everytihng everytime. 
+     * @param logString the string to log. 
+     */
+    public void log(String logString) {
+        try {
+            if (getLogger() == null) {
+                loadFiles();
+            }
+            if (!getLogger().exists()) {
+                getLogger().createNewFile();
+            }
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(getLogger(), false))) {
+                writer.write(logString);
+            }
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
+
+
     public File getVault() {
         return vault;
     }

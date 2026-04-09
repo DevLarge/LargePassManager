@@ -9,15 +9,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="largepass.controllers.HubController">
+<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <VBox alignment="CENTER" prefWidth="Infinity" spacing="20.0" BorderPane.alignment="CENTER">
          <children>
-            <ImageView fitHeight="254.0" fitWidth="203.0" pickOnBounds="true">
-               <image>
-                  <Image url="@images/lea_blaaveis.png" />
-               </image>
-            </ImageView>
             <Label text="Large Password Manager" textAlignment="CENTER" underline="true" wrapText="true">
                <font>
                   <Font name="Cantarell Bold" size="30.0" />
